@@ -1,6 +1,6 @@
 {
   "name": "cs2-weapon-modder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CS2WeaponModder",
   "author": "fatalitymarb",
   "main": "main.js",
@@ -38,6 +38,7 @@
       "target": [
         "portable"
       ],
+      "executableName": "CS2WeaponModder",
       "icon": "build/icon.ico",
       "signAndEditExecutable": false,
       "sign": false

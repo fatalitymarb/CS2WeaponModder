@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS2WeaponModder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self';">
+</head>
+<body>
+
+  <!-- Main App — always visible -->
+  <div id="mainApp" class="main-app">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+          <span>CS2WeaponModder</span>
+        </div>
+        <!-- File source selector -->
+        <div class="header-file-actions">
+          <button class="btn btn-small btn-primary" id="selectFileBtn" title="Select File">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Select File
+          </button>
+          <button class="btn btn-small btn-accent" id="loadDefaultBtn" title="Load default weapons.vdata">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Default weapons.vdata
+          </button>
+          <span class="update-date">Updated: 23.03.2026</span>
+        </div>
+        <div class="file-info" id="fileInfo"></div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-icon" id="addWeaponBtn" title="Add Weapon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <button class="btn btn-icon" id="quickAddBtn" title="Quick Add from Model List">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+        </button>
+        <button class="btn btn-icon" id="downloadBtn" title="Save File As...">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="app-body">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="search-box">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="searchInput" placeholder="Search weapons...">
+          </div>
+          <div class="filter-tabs" id="filterTabs">
+            <button class="filter-tab active" data-filter="all">All</button>
+            <button class="filter-tab" data-filter="weapons">Weapons</button>
+            <button class="filter-tab" data-filter="prefabs">Prefabs</button>
+            <button class="filter-tab" data-filter="numbered">IDs</button>
+            <button class="filter-tab" data-filter="custom">Custom</button>
+          </div>
+        </div>
+        <div class="weapon-list" id="weaponList"></div>
+        <div class="sidebar-footer">
+          <span id="weaponCount">0 items</span>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="content" id="content">
+        <!-- Shown when no file is loaded -->
+        <div class="empty-state" id="noFileState">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          <h3>Select File</h3>
+          <p>Click here to open a .vdata or .txt file, or use the buttons in the header</p>
+        </div>
+        <!-- Shown when file is loaded but no weapon selected -->
+        <div class="empty-state hidden" id="emptyState">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 12h8"/>
+            <path d="M12 8v8"/>
+          </svg>
+          <h3>Select a weapon</h3>
+          <p>Choose a weapon from the sidebar to view and edit its properties</p>
+        </div>
+        <div class="weapon-detail hidden" id="weaponDetail">
+          <div class="detail-header">
+            <div class="detail-title-row">
+              <div class="detail-icon" id="detailIcon"></div>
+              <div>
+                <h2 id="detailName">Weapon Name</h2>
+                <span class="detail-id" id="detailId"></span>
+                <span class="detail-class" id="detailClass">weapon_class</span>
+              </div>
+            </div>
+            <div class="detail-actions">
+              <button class="btn btn-small btn-secondary" id="duplicateBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Duplicate
+              </button>
+              <button class="btn btn-small btn-danger" id="deleteBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                Delete
+              </button>
+            </div>
+          </div>
+          <div class="detail-body" id="detailBody"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Add Weapon Modal -->
+  <div class="modal-overlay hidden" id="addWeaponModal">
+    <div class="modal glass-card">
+      <div class="modal-header">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Custom Weapon
+        </h3>
+        <button class="btn-close" id="closeAddModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Weapon Name in VData</label>
+          <input type="text" id="newWeaponName" class="input-glass" placeholder="e.g. weapon_my_ak47">
+          <small>This is the key name in the vdata file</small>
+        </div>
+        <div class="form-group">
+          <label>Base Weapon</label>
+          <div class="base-weapon-grid" id="baseWeaponGrid"></div>
+        </div>
+        <div class="form-group">
+          <label>Resource Name (Model Path)</label>
+          <input type="text" id="newResourceName" class="input-glass" placeholder="e.g. weapons/models/custom/my_weapon.vmdl">
+          <small>Path for Phase 2 / Weapons model</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelAdd">Cancel</button>
+        <button class="btn btn-primary btn-glow" id="confirmAdd">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Weapon
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Add Modal -->
+  <div class="modal-overlay hidden" id="quickAddModal">
+    <div class="modal modal-wide glass-card">
+      <div class="modal-header">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+          Quick Add from Model List
+        </h3>
+        <button class="btn-close" id="closeQuickModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Step 1: Upload model list -->
+        <div id="quickStep1">
+          <p class="step-label">Step 1: Select your model list file (.txt)</p>
+          <label class="btn btn-primary btn-glow upload-area" id="modelFileBtn">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>Choose .txt file</span>
+            <input type="file" id="modelFileInput" accept=".txt" hidden>
+          </label>
+        </div>
+        <!-- Step 2: Configure models -->
+        <div id="quickStep2" class="hidden">
+          <p class="step-label">Step 2: Configure each model — enter name and select base weapon</p>
+          <div class="model-list" id="modelConfigList"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelQuick">Cancel</button>
+        <button class="btn btn-primary btn-glow hidden" id="continueQuick">
+          Continue
+        </button>
+        <button class="btn btn-primary btn-glow hidden" id="confirmQuick">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Add All Weapons
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+{
+  "name": "cs2-weapon-modder",
+  "version": "1.0.0",
+  "description": "CS2WeaponModder",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win portable",
+    "build-installer": "electron-builder --win nsis",
+    "build-mac-installer": "electron-builder --mac dmg"
+  },
+  "build": {
+    "appId": "com.cs2.weapon-modder",
+    "productName": "CS2WeaponModder",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "vdata-parser.js",
+      "default-weapons.vdata",
+      "public/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../panorama",
+        "to": "panorama",
+        "filter": ["**/*"]
+      }
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "build/icon.ico",
+      "signAndEditExecutable": false,
+      "sign": false
+    },
+    "nsis": {
+      "artifactName": "CS2WeaponModder-Setup-${version}.${ext}",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "CS2WeaponModder",
+      "uninstallDisplayName": "CS2WeaponModder"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.utilities"
+    },
+    "portable": {
+      "artifactName": "CS2WeaponModder.exe"
+    }
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  }
+}

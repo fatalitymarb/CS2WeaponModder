@@ -3,24 +3,19 @@
 (function () {
   'use strict';
 
-  // ─── State ──────────────────────────────────────────────────
   let weaponData = null;
   let currentKey = null;
   let filePath = null;
   let selectedBase = null;
   let modelList = [];
 
-  // ─── DOM refs ───────────────────────────────────────────────
   const $ = (sel) => document.querySelector(sel);
-  const $$ = (sel) => document.querySelectorAll(sel);
 
-  const mainApp = $('#mainApp');
   const weaponListEl = $('#weaponList');
   const searchInput = $('#searchInput');
   const filterTabs = $('#filterTabs');
   const weaponCount = $('#weaponCount');
   const fileInfo = $('#fileInfo');
-  const contentArea = $('#content');
   const noFileState = $('#noFileState');
   const emptyState = $('#emptyState');
   const weaponDetail = $('#weaponDetail');
@@ -45,17 +40,6 @@
     'weapon_hegrenade', 'weapon_flashbang', 'weapon_smokegrenade',
     'weapon_molotov', 'weapon_incgrenade', 'weapon_decoy',
     'weapon_taser', 'weapon_healthshot', 'weapon_c4'
-  ];
-
-  const KNIFE_WEAPONS = [
-    'weapon_knife', 'weapon_knife_t',
-    'weapon_knife_css', 'weapon_knife_flip', 'weapon_knife_gut',
-    'weapon_knife_karambit', 'weapon_knife_m9_bayonet', 'weapon_knife_tactical',
-    'weapon_knife_falchion', 'weapon_knife_survival_bowie', 'weapon_knife_butterfly',
-    'weapon_knife_push', 'weapon_knife_cord', 'weapon_knife_canis',
-    'weapon_knife_ursus', 'weapon_knife_gypsy_jackknife', 'weapon_knife_outdoor',
-    'weapon_knife_stiletto', 'weapon_knife_widowmaker', 'weapon_knife_twinblade',
-    'weapon_knife_skeleton', 'weapon_knife_kukri'
   ];
 
   const ORIGINAL_KEYS = new Set();
@@ -120,8 +104,6 @@
     }
   };
 
-  // ─── Utility Functions ──────────────────────────────────────
-
   function toast(message, type = 'info') {
     const el = document.createElement('div');
     el.className = `toast toast-${type}`;
@@ -182,7 +164,6 @@
     return svg;
   }
 
-  // Icon cache to avoid repeated IPC calls
   const iconCache = {};
 
   function createIconElement(iconName, size = 24) {
@@ -199,7 +180,6 @@
       return container;
     }
 
-    // Check cache first
     if (iconCache[iconName] !== undefined) {
       if (iconCache[iconName]) {
         container.innerHTML = iconCache[iconName];
@@ -215,10 +195,8 @@
       return container;
     }
 
-    // Show default while loading
     container.appendChild(createDefaultIcon(size));
 
-    // Load async
     window.electronAPI.getIcon(iconName).then(result => {
       if (result && result.success) {
         iconCache[iconName] = result.svg;
@@ -239,16 +217,12 @@
     return container;
   }
 
-  // ─── Sync data back to main process ─────────────────────────
   function syncData() {
     if (weaponData) {
       window.electronAPI.updateData(weaponData);
     }
   }
 
-  // ─── File Loading ───────────────────────────────────────────
-
-  // "Select File" button in header
   $('#selectFileBtn').addEventListener('click', async () => {
     try {
       const json = await window.electronAPI.openFile();
@@ -266,13 +240,11 @@
     }
   });
 
-  // Clicking on the "Select File" empty state area
   noFileState.addEventListener('click', async () => {
     $('#selectFileBtn').click();
   });
   noFileState.style.cursor = 'pointer';
 
-  // Load default weapons.vdata (embedded in app)
   $('#loadDefaultBtn').addEventListener('click', async () => {
     try {
       const json = await window.electronAPI.loadDefault();
@@ -288,8 +260,6 @@
       toast('Error: ' + err.message, 'error');
     }
   });
-
-  // ─── Main App Display ──────────────────────────────────────
 
   function showMainApp() {
     fileInfo.textContent = filePath || 'Untitled';
@@ -321,10 +291,7 @@
     weaponDetail.classList.add('hidden');
   }
 
-  // Show "Select File" state on startup
   showNoFileState();
-
-  // ─── Weapon List ────────────────────────────────────────────
 
   function getFilteredKeys() {
     if (!weaponData) return [];
@@ -402,8 +369,6 @@
       renderWeaponList();
     }
   });
-
-  // ─── Weapon Detail ──────────────────────────────────────────
 
   function selectWeapon(key) {
     currentKey = key;
@@ -658,9 +623,6 @@
     obj[index] = parseInputValue(value);
   }
 
-  // ─── Header Actions ────────────────────────────────────────
-
-  // Download / Save As — opens file explorer to choose save location, always .vdata
   $('#downloadBtn').addEventListener('click', async () => {
     if (!weaponData) return toast('No data to save', 'warning');
     try {
@@ -677,7 +639,6 @@
     }
   });
 
-  // Delete weapon
   $('#deleteBtn').addEventListener('click', async () => {
     if (!currentKey) return;
     if (ORIGINAL_KEYS.has(currentKey)) {
@@ -704,7 +665,6 @@
     }
   });
 
-  // Duplicate weapon
   $('#duplicateBtn').addEventListener('click', () => {
     if (!currentKey || !weaponData[currentKey]) return;
     const newKey = currentKey + '_copy';
@@ -720,8 +680,6 @@
     selectWeapon(newKey);
     toast(`Duplicated as "${newKey}"`, 'success');
   });
-
-  // ─── Add Weapon Modal ──────────────────────────────────────
 
   const addModal = $('#addWeaponModal');
   const baseGrid = $('#baseWeaponGrid');
@@ -837,8 +795,6 @@
     }
   });
 
-  // ─── Quick Add Modal ───────────────────────────────────────
-
   const quickModal = $('#quickAddModal');
   const quickStep1 = $('#quickStep1');
   const quickStep2 = $('#quickStep2');
@@ -863,7 +819,6 @@
     if (e.target === quickModal) quickModal.classList.add('hidden');
   });
 
-  // Read model file locally via FileReader then parse via IPC
   $('#modelFileInput').addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -969,8 +924,6 @@
       toast('Error: ' + err.message, 'error');
     }
   });
-
-  // ─── Keyboard Shortcuts ────────────────────────────────────
 
   document.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.key === 's') {

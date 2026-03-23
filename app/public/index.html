@@ -12,9 +12,7 @@
 </head>
 <body>
 
-  <!-- Main App — always visible -->
   <div id="mainApp" class="main-app">
-    <!-- Header -->
     <header class="app-header">
       <div class="header-left">
         <div class="logo">
@@ -25,7 +23,6 @@
           </svg>
           <span>CS2WeaponModder</span>
         </div>
-        <!-- File source selector -->
         <div class="header-file-actions">
           <button class="btn btn-small btn-primary" id="selectFileBtn" title="Select File">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -35,7 +32,6 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
             Default weapons.vdata
           </button>
-          <span class="update-date">Updated: 23.03.2026</span>
         </div>
         <div class="file-info" id="fileInfo"></div>
       </div>
@@ -53,7 +49,6 @@
     </header>
 
     <div class="app-body">
-      <!-- Sidebar -->
       <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
           <div class="search-box">
@@ -74,9 +69,7 @@
         </div>
       </aside>
 
-      <!-- Main Content -->
       <main class="content" id="content">
-        <!-- Shown when no file is loaded -->
         <div class="empty-state" id="noFileState">
           <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
             <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
@@ -85,7 +78,6 @@
           <h3>Select File</h3>
           <p>Click here to open a .vdata or .txt file, or use the buttons in the header</p>
         </div>
-        <!-- Shown when file is loaded but no weapon selected -->
         <div class="empty-state hidden" id="emptyState">
           <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
             <circle cx="12" cy="12" r="10"/>
@@ -122,7 +114,6 @@
     </div>
   </div>
 
-  <!-- Add Weapon Modal -->
   <div class="modal-overlay hidden" id="addWeaponModal">
     <div class="modal glass-card">
       <div class="modal-header">
@@ -158,7 +149,6 @@
     </div>
   </div>
 
-  <!-- Quick Add Modal -->
   <div class="modal-overlay hidden" id="quickAddModal">
     <div class="modal modal-wide glass-card">
       <div class="modal-header">
@@ -169,7 +159,6 @@
         <button class="btn-close" id="closeQuickModal">&times;</button>
       </div>
       <div class="modal-body">
-        <!-- Step 1: Upload model list -->
         <div id="quickStep1">
           <p class="step-label">Step 1: Select your model list file (.txt)</p>
           <label class="btn btn-primary btn-glow upload-area" id="modelFileBtn">
@@ -178,7 +167,6 @@
             <input type="file" id="modelFileInput" accept=".txt" hidden>
           </label>
         </div>
-        <!-- Step 2: Configure models -->
         <div id="quickStep2" class="hidden">
           <p class="step-label">Step 2: Configure each model — enter name and select base weapon</p>
           <div class="model-list" id="modelConfigList"></div>
@@ -197,7 +185,6 @@
     </div>
   </div>
 
-  <!-- Toast -->
   <div class="toast-container" id="toastContainer"></div>
 
   <script src="js/app.js"></script>

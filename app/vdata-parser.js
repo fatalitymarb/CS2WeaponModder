@@ -1,5 +1,5 @@
 /**
- * VDATA Parser & Serializer — ported from server.py
+ * VDATA parser and serializer.
  */
 
 'use strict';

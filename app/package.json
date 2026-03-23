@@ -2,6 +2,7 @@
   "name": "cs2-weapon-modder",
   "version": "1.0.0",
   "description": "CS2WeaponModder",
+  "author": "fatalitymarb",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -23,6 +24,10 @@
       "public/**/*"
     ],
     "extraResources": [
+      {
+        "from": "build/icon.ico",
+        "to": "icon.ico"
+      },
       {
         "from": "../panorama",
         "to": "panorama",

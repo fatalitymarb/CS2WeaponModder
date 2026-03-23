@@ -7,7 +7,13 @@ let mainWindow;
 let currentData = null;
 let headerComment = HEADER_COMMENT;
 
-// Resolve panorama icon directory (works both in dev and packaged)
+function getAppIconPath() {
+  if (app.isPackaged) {
+    return path.join(process.resourcesPath, 'icon.ico');
+  }
+  return path.join(__dirname, 'build', 'icon.ico');
+}
+
 function getPanoramaDir() {
   if (app.isPackaged) {
     return path.join(process.resourcesPath, 'panorama', 'images', 'icons', 'equipment');
@@ -22,6 +28,7 @@ function createWindow() {
     minWidth: 900,
     minHeight: 600,
     title: 'CS2WeaponModder',
+    icon: getAppIconPath(),
     autoHideMenuBar: true,
     backgroundColor: '#0a0a1a',
     webPreferences: {
@@ -34,7 +41,10 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, 'public', 'index.html'));
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  app.setAppUserModelId('com.cs2.weapon-modder');
+  createWindow();
+});
 
 app.on('window-all-closed', () => {
   app.quit();
@@ -44,9 +54,6 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
-/* ─── IPC Handlers ────────────────────────────────────────────── */
-
-// Open file dialog and load selected file
 ipcMain.handle('open-file', async () => {
   const result = await dialog.showOpenDialog(mainWindow, {
     title: 'Select a .vdata or .txt file',
@@ -77,7 +84,6 @@ ipcMain.handle('open-file', async () => {
   }
 });
 
-// Load the embedded default weapons.vdata
 ipcMain.handle('load-default', () => {
   try {
     const defaultPath = path.join(__dirname, 'default-weapons.vdata');
@@ -100,22 +106,6 @@ ipcMain.handle('load-default', () => {
   }
 });
 
-// Load file content passed from the renderer (via drag-drop or file input)
-ipcMain.handle('load-content', (_event, content, fileName) => {
-  try {
-    const firstLine = content.split('\n')[0].trim();
-    if (firstLine.startsWith('<!--')) {
-      headerComment = firstLine;
-    }
-
-    currentData = parseVdata(content);
-    return { success: true, data: currentData, filePath: fileName || 'uploaded_file' };
-  } catch (err) {
-    return { success: false, error: err.message };
-  }
-});
-
-// Save As dialog — always saves as .vdata
 ipcMain.handle('save-as', () => {
   if (!currentData) {
     return { success: false, error: 'No data to save' };
@@ -134,7 +124,6 @@ ipcMain.handle('save-as', () => {
       return { success: false, canceled: true };
     }
 
-    // Force .vdata extension
     let savePath = result;
     if (!savePath.toLowerCase().endsWith('.vdata')) {
       savePath = savePath.replace(/\.[^.]+$/, '') + '.vdata';
@@ -148,13 +137,11 @@ ipcMain.handle('save-as', () => {
   }
 });
 
-// Update data from renderer (keep server data in sync)
 ipcMain.handle('update-data', (_event, data) => {
   currentData = data;
   return { success: true };
 });
 
-// Add weapon
 ipcMain.handle('add-weapon', (_event, key, baseKey, resourceName) => {
   if (!currentData) return { success: false, error: 'No file loaded' };
   if (!key || !baseKey) return { success: false, error: 'Missing key or baseKey' };
@@ -176,7 +163,6 @@ ipcMain.handle('add-weapon', (_event, key, baseKey, resourceName) => {
   return { success: true, data: newWeapon };
 });
 
-// Delete weapon
 ipcMain.handle('delete-weapon', (_event, key) => {
   if (!currentData) return { success: false, error: 'No file loaded' };
   if (!currentData[key]) return { success: false, error: 'Weapon not found' };
@@ -189,7 +175,6 @@ ipcMain.handle('delete-weapon', (_event, key) => {
   return { success: true };
 });
 
-// Batch add weapons
 ipcMain.handle('batch-add', (_event, weapons) => {
   if (!currentData) return { success: false, error: 'No file loaded' };
 
@@ -221,7 +206,6 @@ ipcMain.handle('batch-add', (_event, weapons) => {
   return { results };
 });
 
-// Parse model list file content
 ipcMain.handle('parse-models', (_event, content) => {
   const models = content.split('\n')
     .map(l => l.trim())
@@ -229,20 +213,6 @@ ipcMain.handle('parse-models', (_event, content) => {
   return { models };
 });
 
-// Get list of available icon names
-ipcMain.handle('get-icons', () => {
-  const panoramaDir = getPanoramaDir();
-  try {
-    if (!fs.existsSync(panoramaDir)) return { icons: [] };
-    const files = fs.readdirSync(panoramaDir);
-    const icons = files.filter(f => f.endsWith('.svg')).map(f => f.slice(0, -4));
-    return { icons };
-  } catch {
-    return { icons: [] };
-  }
-});
-
-// Get a specific icon SVG content
 ipcMain.handle('get-icon', (_event, name) => {
   const safeName = name.replace(/[^a-zA-Z0-9_-]/g, '');
   const panoramaDir = getPanoramaDir();

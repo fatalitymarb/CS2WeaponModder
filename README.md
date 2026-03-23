@@ -1,25 +1,42 @@
-## ✨ Features / Özellikler
+# CS2WeaponModder
 
-- 🎯 **Edit weapon.vdata with UI / weapon.vdata Dosyalarını UI ile Düzenleme**  
-  Easily modify all weapon data through a clean interface.  
-  Tüm silah verilerini sade ve kullanıcı dostu bir arayüz üzerinden kolayca düzenleyin.
+Desktop editor for Counter-Strike 2 weapon `.vdata` files.
 
-- ➕ **Add New Weapons / Yeni Silah Ekleme**  
-  Create and integrate new weapons quickly without manual editing.  
-  Manuel dosya düzenlemeye gerek kalmadan hızlıca yeni silahlar oluşturun.
+## What It Does
 
-- ⚙️ **Centralized Config Management / Merkezi Config Yönetimi**  
-  Control all weapon settings from a single panel.  
-  Tüm silah ayarlarını tek bir panel üzerinden yönetin.
+- Open `.vdata`, `.txt`, or `.cfg` weapon data files
+- Load the bundled default `weapons.vdata`
+- Edit weapon properties with a desktop UI
+- Duplicate, delete, and add custom weapons
+- Batch-add weapons from model lists
+- Export files as `.vdata`
 
-- 💡 **No Coding Required / Kod Yazmadan Kullanım**  
-  Fully UI-driven workflow with no coding needed.  
-  Hiç kod yazmadan tüm işlemleri gerçekleştirin.
+## Project Structure
 
-- 🚀 **Fast & Optimized Interface / Hızlı ve Optimize Arayüz**  
-  Lightweight, responsive, and efficient.  
-  Hafif, akıcı ve performans odaklı kullanım deneyimi.
+- [app](app): Electron desktop application
+- [panorama](panorama): bundled weapon icons
+- [weapons.vdata](weapons.vdata): source data file
 
-- 🔧 **Built for Developers & Server Owners / Geliştiriciler ve Sunucu Sahipleri İçin**  
-  Ideal for modders, plugin developers, and server managers.  
-  Mod geliştiricileri, plugin yazanlar ve sunucu yöneticileri için idealdir.
+## Development
+
+```powershell
+cd app
+npm install
+npm start
+```
+
+## Build
+
+Portable Windows executable:
+
+```powershell
+cd app
+npm run build
+```
+
+Windows installer:
+
+```powershell
+cd app
+npm run build-installer
+```

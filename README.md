@@ -1,5 +1,7 @@
 # CS2WeaponModder
 <img width="1919" height="1028" alt="image" src="https://github.com/user-attachments/assets/75e8d704-002b-4a22-853d-c0c3405143e9" />
+<img width="1569" height="313" alt="image" src="https://github.com/user-attachments/assets/63ab221a-b38f-4df6-ac20-55f988179068" />
+
 Desktop editor for Counter-Strike 2 weapon `.vdata` files.
 
 ## What It Does

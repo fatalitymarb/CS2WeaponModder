@@ -1,8 +1,10 @@
 # CS2WeaponModder
-
+<img width="1919" height="1028" alt="image" src="https://github.com/user-attachments/assets/75e8d704-002b-4a22-853d-c0c3405143e9" />
 Desktop editor for Counter-Strike 2 weapon `.vdata` files.
 
 ## What It Does
+
+
 
 - Open `.vdata`, `.txt`, or `.cfg` weapon data files
 - Load the bundled default `weapons.vdata`
